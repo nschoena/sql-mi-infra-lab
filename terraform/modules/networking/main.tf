@@ -74,7 +74,7 @@ resource "azurerm_network_security_rule" "allow_management_inbound" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_range      = "9000,9003,1438,1440,1452"
+  destination_port_ranges     = ["9000", "9003", "1438", "1440", "1452"]
   source_address_prefix       = "CorpNetPublic" # Or "SqlManagement" Service Tag
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
