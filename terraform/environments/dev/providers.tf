@@ -10,7 +10,7 @@ terraform {
         version = ">= 3.0"
     }
   }
-  # You also need your backend block here if you haven't added it yet
+  # Backend configuration for storing Terraform state in Azure Blob Storage
   backend "azurerm" {
     resource_group_name  = "tfstate-rg"
     storage_account_name = "dbrelabtfstate"

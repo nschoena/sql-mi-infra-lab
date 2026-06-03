@@ -1,0 +1,46 @@
+name: SQL MI Lab Deployment
+
+on:
+  push:
+    branches: ["feature/**", "main"]
+
+# These environment variables link GitHub Secrets to the Runner
+env:
+  # This tells the GitHub Runner to use Node 24 even if the action asks for 20
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+  # Azure Authentication
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+jobs:
+  deploy:
+    name: "Deploy SQL MI Lab Infrastructure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # --- INFRASTRUCTURE PHASE ---    
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform/environments/dev
+
+      - name: Validate Terraform configuration
+        run: terraform validate
+        working-directory: ./terraform/environments/dev
+
+      - name: Plan Terraform deployment
+        run: terraform plan -out=tfplan -input=false
+        working-directory: ./terraform/environments/dev
+
+      - name: Apply Terraform deployment
+        # Only apply if we're on the main branch to prevent unintended deployments from feature branches
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan -input=false
+        working-directory: ./terraform/environments/dev
