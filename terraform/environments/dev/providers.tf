@@ -10,4 +10,24 @@ terraform {
         version = ">= 3.0"
     }
   }
+  # You also need your backend block here if you haven't added it yet
+  backend "azurerm" {
+    resource_group_name  = "tfstate-rg"
+    storage_account_name = "dbrelabtfstate"
+    container_name       = "tfstate"
+    key                  = "sql-mi-dev.tfstate"
+  }
+}
+
+provider "azurerm" {
+  features {
+    # This block is mandatory for the AzureRM provider.
+    # It allows you to customize behaviors like "delete OS disk on VM termination"
+    # but for now, we leave it empty.
+  }
+}
+
+provider "random" {
+  # The random provider doesn't require a features block, 
+  # but defining it explicitly is good practice.
 }
