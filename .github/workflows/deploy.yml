@@ -42,5 +42,5 @@ jobs:
       - name: Apply Terraform deployment
         # Only apply if we're on the main branch to prevent unintended deployments from feature branches
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan -input=false
+        run: terraform apply tfplan
         working-directory: ./terraform/environments/dev
