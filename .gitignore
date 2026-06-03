@@ -6,6 +6,9 @@
 **/*.tfvars.json
 crash.log
 
+# But DO NOT ignore environment-specific configs
+!dev.tfvars
+
 # Ansible retry files and collections
 *.retry
 .ansible/
